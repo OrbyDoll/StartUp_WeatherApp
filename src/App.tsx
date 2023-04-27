@@ -28,47 +28,39 @@ function App(): JSX.Element {
   const [cityName, setCityName] = useState<string>("");
   const [citiesMass, setCitiesMass] = useState<PropsCityCard[]>([]);
 
-  const dataFetch = (cityInfo: string): void => {
+  const dataFetch = async (cityInfo: string): Promise<void> => {
     const urlGeo = getUrlGeo(cityInfo);
 
     createFetch(urlGeo).then((res) => {
-      const urlData = getUrlData(res);
+      const urlData = getUrlData(res[0]);
 
       createFetch(urlData).then((weatherInfo) => {
         console.log(weatherInfo);
 
-        const sunriseDate = new Date(weatherInfo.sys.sunrise * 1000);
-        const sunsetDate = new Date(weatherInfo.sys.sunset * 1000);
-
-        setCitiesMass((prevState) => {
-          const pushingInfo = {
-            sun: {
-              sunrise:
-                sunriseDate.getHours() + " : " + sunriseDate.getMinutes(),
-              sunset: sunsetDate.getHours() + " : " + sunsetDate.getMinutes(),
-            },
-          };
-
-          prevState.push(pushingInfo);
-          return prevState;
-        });
+        const sunriseDate = new Date((weatherInfo.sys.sunrise - 10800 + weatherInfo.timezone) * 1000);
+        const sunsetDate = new Date((weatherInfo.sys.sunset - 10800 + weatherInfo.timezone) * 1000);
+        let prevState = [...citiesMass];
+        const pushingInfo = {
+          sun: {
+            sunrise: sunriseDate.getHours() + " : " + sunriseDate.getMinutes(),
+            sunset: sunsetDate.getHours() + " : " + sunsetDate.getMinutes(),
+          },
+        };
+        prevState.push(pushingInfo);
+        setCitiesMass(prevState);
       });
     });
   };
 
-  useEffect(() => dataFetch("Ярославль"), []);
+  useEffect(() => {
+    dataFetch("Ярославль");
+  }, []);
 
   return (
     <div className="mainWrap">
       <div className="cityInputWrap">
-        <input
-          className="cityInput"
-          onChange={(e) => setCityName(e.target.value)}
-        ></input>
-        <button
-          className="cityInputButton"
-          onClick={() => dataFetch(cityName)}
-        ></button>
+        <input className="cityInput" onChange={(e) => setCityName(e.target.value)}></input>
+        <button className="cityInputButton" onClick={() => dataFetch(cityName)}></button>
       </div>
       <div>
         {citiesMass.map((city, index) => {
