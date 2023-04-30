@@ -3,7 +3,7 @@ export function getUrlGeo(data: string): string {
 }
 
 export function getUrlData(data: {lat:number, lon:number}): string {
-  return `https://api.openweathermap.org/data/2.5/weather?lat=${data.lat}&lon=${data.lon}&lang=ru&appid=07a92f5fb756a201a6c5d7822a16965b`;
+  return `https://api.openweathermap.org/data/2.5/weather?lat=${data.lat}&lon=${data.lon}&lang=en&appid=07a92f5fb756a201a6c5d7822a16965b`;
 }
 
 export async function createFetch(url: string): Promise<any> {

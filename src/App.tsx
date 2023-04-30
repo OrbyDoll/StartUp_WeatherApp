@@ -1,6 +1,7 @@
 import "./App.css";
 import { useEffect, useState } from "react";
 import { createFetch, getUrlData, getUrlGeo } from "./helpers";
+import { domainToASCII } from "url";
 // 07a92f5fb756a201a6c5d7822a16965b - APIkey
 // lat = 57.62987 lon = 39.87368
 // type weatherObject = {
@@ -26,8 +27,8 @@ function CityCard({ sun, city }: PropsCityCard): JSX.Element {
       <p className="cityName">{city.name}</p>
       <p className="cityTemp">{city.temp}°</p>
       <p className="cityTempDesc">{city.desc}</p>
-      <p>Восход: {sun.sunrise}</p>
-      <p>Заход: {sun.sunset}</p>
+      <p>Sunrise: {sun.sunrise}</p>
+      <p>Sunset: {sun.sunset}</p>
     </div>
   );
 }
@@ -93,4 +94,12 @@ function App(): JSX.Element {
     </div>
   );
 }
+//<ion-icon name="thermometer-outline"></ion-icon>
+//<ion-icon name="sunny-outline"></ion-icon>
+//<ion-icon name="rainy-outline"></ion-icon>
+fetch('https://api.openweathermap.org/data/2.5/forecast?lat=57.62987&lon=39.87368&cnt=3&appid=07a92f5fb756a201a6c5d7822a16965b')
+  .then(file => file.json())
+  .then(data => console.log(data)
+  )
 export default App;
+//
