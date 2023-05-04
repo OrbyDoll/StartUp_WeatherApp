@@ -1,14 +1,15 @@
 import "./App.css";
 import { useEffect, useState } from "react";
 import { createFetch, getUrlData, getUrlGeo } from "./helpers";
-import { domainToASCII } from "url";
+import { getImage } from "./getImage";
 // 07a92f5fb756a201a6c5d7822a16965b - APIkey
 // lat = 57.62987 lon = 39.87368
 // type weatherObject = {
 //   weather: ,
 //   description: string
 // };
-// console.log(new Date(Date.UTC(2012, 11, 20, 3, 0, 0)));
+// https://say-hi.me/design/7-primerov-krutogo-ui-dlya-prilozhenij-pogody.html - Макет
+// https://openweathermap.org/forecast5 - 5 дней по 3 часа
 type PropsCityCard = {
   sun: {
     sunrise: string;
@@ -27,8 +28,15 @@ function CityCard({ sun, city }: PropsCityCard): JSX.Element {
       <p className="cityName">{city.name}</p>
       <p className="cityTemp">{city.temp}°</p>
       <p className="cityTempDesc">{city.desc}</p>
-      <p>Sunrise: {sun.sunrise}</p>
-      <p>Sunset: {sun.sunset}</p>
+      <div className="cityPanel">
+        <div className="cityPanelMenu">
+          <select className="dataSelect">
+            <option value="Monday">Monday</option>
+            <option value="Tuesday">Tuesday</option>
+          </select>
+          <div>{getImage("temp")}</div>
+        </div>
+      </div>
     </div>
   );
 }
@@ -96,10 +104,9 @@ function App(): JSX.Element {
 }
 //<ion-icon name="thermometer-outline"></ion-icon>
 //<ion-icon name="sunny-outline"></ion-icon>
-//<ion-icon name="rainy-outline"></ion-icon>
-fetch('https://api.openweathermap.org/data/2.5/forecast?lat=57.62987&lon=39.87368&cnt=3&appid=07a92f5fb756a201a6c5d7822a16965b')
-  .then(file => file.json())
-  .then(data => console.log(data)
-  )
+
+fetch("https://api.openweathermap.org/data/2.5/forecast?lat=57.62987&lon=39.87368&cnt=50&appid=07a92f5fb756a201a6c5d7822a16965b")
+  .then((file) => file.json())
+  .then((data) => console.log(data));
 export default App;
 //

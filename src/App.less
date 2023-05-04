@@ -1,8 +1,8 @@
-@import url('https://fonts.googleapis.com/css2?family=M+PLUS+1p:wght@300&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=M+PLUS+1p:wght@300&display=swap");
 * {
   padding: 0;
   margin: 0;
-  font-family: 'M PLUS 1p', sans-serif;
+  font-family: "M PLUS 1p", sans-serif;
 }
 
 .mainWrap {
@@ -14,6 +14,12 @@
   flex-direction: column;
 }
 .city {
+  &Panel {
+    width: 100%;
+    height: 150px;
+    // background-color: lightgreen;
+    margin-top: auto;
+  }
   &Input {
     outline: none;
     &Wrap {
@@ -42,19 +48,27 @@
       margin-top: 20px;
     }
   }
-  &Name{
+  &Name {
     font-size: 30px;
     margin: 3px auto;
     // color: white
   }
-  &Temp{
+  &Temp {
     font-size: 50px;
-    margin: 3px auto 0px auto;
+    margin: 10px auto 0px auto;
+    line-height: 45px;
     // color:white
   }
   &TempDesc {
     font-size: 20px;
-    margin:0px auto;
+    margin: 0px auto;
     // color:white
   }
+}
+.dataSelect {
+  outline: none;
+  border: none;
+}
+option {
+  border: none;
 }
