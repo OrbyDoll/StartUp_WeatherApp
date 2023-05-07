@@ -30,11 +30,17 @@ function CityCard({ sun, city }: PropsCityCard): JSX.Element {
       <p className="cityTempDesc">{city.desc}</p>
       <div className="cityPanel">
         <div className="cityPanelMenu">
-          <select className="dataSelect">
-            <option value="Monday">Monday</option>
-            <option value="Tuesday">Tuesday</option>
-          </select>
-          <div>{getImage("temp")}</div>
+          <div className="dataSelectMenu">
+            {/* <select className="dataSelect">
+              <option value="Monday">Monday</option>
+              <option value="Tuesday">Tuesday</option>
+            </select> */}
+            <div className="svgContainer">
+              {getImage("temp")}
+              {getImage("sun")}
+              {getImage("weather")}
+            </div>
+          </div>
         </div>
       </div>
     </div>
