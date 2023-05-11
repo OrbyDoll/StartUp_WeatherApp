@@ -24,11 +24,7 @@ type PropsCityCard = {
 
 function CityCard({ sun, city }: PropsCityCard): JSX.Element {
   const [selectOption, setSelectOption] = useState<string>("temp");
-  let info = "";
-  switch (selectOption) {
-    case "temp":
-      info = "";
-  }
+  const [scrollValue, setScrollValue] = useState<number>(0);
   return (
     <div className="cityCard">
       <p className="cityName">{city.name}</p>
@@ -37,13 +33,23 @@ function CityCard({ sun, city }: PropsCityCard): JSX.Element {
       <div className="cityPanel">
         <div className="cityPanelMenu">
           <div className="dataSelectMenu">
-            <div className="xp">
-              <div className="xp_in">
-                <p>Monday</p>
-                <p>Tuesaday</p>
-                <p>Wednesday</p>
-                <p>Thursday</p>
-                <p>Friday</p>
+            <div className="daySelect">
+              <div
+                className="daySelect_in"
+                onWheel={(event) => {
+                  console.log(Math.sign(event.deltaY));
+
+                  if ((scrollValue < 0 || Math.sign(event.deltaY) != 1) && (scrollValue > -100 || Math.sign(event.deltaY) != -1)) {
+                    setScrollValue((then) => then + (1 * event.deltaY) / 50);
+                  }
+                }}
+                style={{ top: `${scrollValue}px` }}
+              >
+                <p>Mon</p>
+                <p>Tue</p>
+                <p>Wed</p>
+                <p>Thur</p>
+                <p>Fri</p>
               </div>
             </div>
             <div className="svgContainer">
@@ -52,8 +58,9 @@ function CityCard({ sun, city }: PropsCityCard): JSX.Element {
               <div onClick={() => setSelectOption("weather")}>{getImage("weather")}</div>
             </div>
           </div>
+          <div className="line"></div>
         </div>
-        <div className="infoMenu">{info}</div>
+        {/* <div className="infoMenu"></div> */}
       </div>
     </div>
   );
