@@ -39,7 +39,7 @@
   &Card {
     height: 470px;
     box-shadow: 0px 8px 49px 0px rgba(0, 0, 0, 0.5);
-    background-image: url('/img/гора.jpg');
+    background-image: url("/img/гора.jpg");
     background-size: cover;
     width: 285px;
     margin: 0 20px;
@@ -59,37 +59,47 @@
   &Name {
     font-size: 30px;
     margin: -60px auto 3px auto;
-    color: white
+    color: white;
   }
   &Temp {
     font-size: 70px;
     margin: 50px auto 0px auto;
     line-height: 45px;
-    color:white
+    color: white;
   }
   &TempDesc {
     font-size: 25px;
     margin: 10px auto;
-    color:white
+    color: white;
   }
 }
 .dataSelect {
-  &Menu{
+  &Menu {
     display: flex;
     flex-direction: row;
     height: 30px;
   }
-  margin-left:5px;
+  margin-left: 5px;
   font-size: 18px;
   outline: none;
   border: none;
 }
-.svgContainer{
+.svgContainer {
   display: flex;
   margin-left: auto;
   margin-right: 10px;
 }
-svg{
+svg {
   height: 25px;
   margin-right: 8px;
+}
+.xp {
+  width: 100px;
+  height: 20px;
+  overflow: hidden;
+  position: relative;
+  &_in {
+    position: absolute;
+    top: 0;
+  }
 }

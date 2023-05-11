@@ -8,8 +8,8 @@ import { getImage } from "./getImage";
 //   weather: ,
 //   description: string
 // };
-// https://say-hi.me/design/7-primerov-krutogo-ui-dlya-prilozhenij-pogody.html - Макет
 // https://openweathermap.org/forecast5 - 5 дней по 3 часа
+// https://say-hi.me/design/7-primerov-krutogo-ui-dlya-prilozhenij-pogody.html - Макет
 type PropsCityCard = {
   sun: {
     sunrise: string;
@@ -23,6 +23,12 @@ type PropsCityCard = {
 };
 
 function CityCard({ sun, city }: PropsCityCard): JSX.Element {
+  const [selectOption, setSelectOption] = useState<string>("temp");
+  let info = "";
+  switch (selectOption) {
+    case "temp":
+      info = "";
+  }
   return (
     <div className="cityCard">
       <p className="cityName">{city.name}</p>
@@ -31,17 +37,23 @@ function CityCard({ sun, city }: PropsCityCard): JSX.Element {
       <div className="cityPanel">
         <div className="cityPanelMenu">
           <div className="dataSelectMenu">
-            {/* <select className="dataSelect">
-              <option value="Monday">Monday</option>
-              <option value="Tuesday">Tuesday</option>
-            </select> */}
+            <div className="xp">
+              <div className="xp_in">
+                <p>Monday</p>
+                <p>Tuesaday</p>
+                <p>Wednesday</p>
+                <p>Thursday</p>
+                <p>Friday</p>
+              </div>
+            </div>
             <div className="svgContainer">
-              {getImage("temp")}
-              {getImage("sun")}
-              {getImage("weather")}
+              <div onClick={() => setSelectOption("temp")}>{getImage("temp")}</div>
+              <div onClick={() => setSelectOption("sun")}>{getImage("sun")}</div>
+              <div onClick={() => setSelectOption("weather")}>{getImage("weather")}</div>
             </div>
           </div>
         </div>
+        <div className="infoMenu">{info}</div>
       </div>
     </div>
   );

@@ -42,7 +42,7 @@
 .cityCard {
   height: 470px;
   box-shadow: 0px 8px 49px 0px rgba(0, 0, 0, 0.5);
-  background-image: url('/img/гора.jpg');
+  background-image: url("/img/гора.jpg");
   background-size: cover;
   width: 285px;
   margin: 0 20px;
@@ -93,4 +93,14 @@
 svg {
   height: 25px;
   margin-right: 8px;
+}
+.xp {
+  width: 100px;
+  height: 20px;
+  overflow: hidden;
+  position: relative;
+}
+.xp_in {
+  position: absolute;
+  top: 0;
 }
