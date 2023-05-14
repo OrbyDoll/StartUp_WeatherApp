@@ -10,12 +10,6 @@ export async function createFetch(url: string): Promise<any> {
   return fetch(url).then((file) => file.json())
 }
 
-// let prevState = citiesMass.slice();
-//         const pushingInfo = {
-//           sun: {
-//             sunrise: sunriseDate.getHours() + " : " + sunriseDate.getMinutes(),
-//             sunset: sunsetDate.getHours() + " : " + sunsetDate.getMinutes(),
-//           },
-//         };
-//         prevState.push(pushingInfo);
-//         setCitiesMass(prevState);
+export function getUrlForecast(data: {lat:number, lon:number}):string{
+  return `api.openweathermap.org/data/2.5/forecast?lat=${data.lat}&lon=${data.lon}&appid=07a92f5fb756a201a6c5d7822a16965b`
+}

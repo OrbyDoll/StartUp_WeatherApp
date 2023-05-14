@@ -1,6 +1,6 @@
 import "./App.css";
 import { useEffect, useState } from "react";
-import { createFetch, getUrlData, getUrlGeo } from "./helpers";
+import { createFetch, getUrlData, getUrlGeo, getUrlForecast } from "./helpers";
 import { getImage } from "./getImage";
 // 07a92f5fb756a201a6c5d7822a16965b - APIkey
 // lat = 57.62987 lon = 39.87368
@@ -20,11 +20,41 @@ type PropsCityCard = {
     temp: number;
     desc: string;
   };
+  geo: {
+    lat: number;
+    lon: number;
+  };
 };
 
-function CityCard({ sun, city }: PropsCityCard): JSX.Element {
+function CityCard({ sun, city, geo }: PropsCityCard): JSX.Element {
   const [selectOption, setSelectOption] = useState<string>("temp");
   const [scrollValue, setScrollValue] = useState<number>(0);
+  const [forecastData, setForecastData] = useState<any>([]);
+
+  useEffect(() => {
+    const urlForecast = getUrlForecast({ lat: geo.lat, lon: geo.lon });
+    createFetch(urlForecast).then((res) => {
+      let pushingInfo: any[][] = [[]];
+      for (let i = 0; i < res.list.length; i++) {
+        let timestampData = {
+          main: {
+            temp: Math.floor(res.list[i].main.temp - 273.15),
+            icon: res.list[i].weather.icon,
+            time: new Date(res.list[i].dt * 1000).getHours(),
+          },
+        };
+        if (i == 0) {
+          pushingInfo[0].push(timestampData);
+        } else if (new Date(res.list[i].dt * 1000).getDay() == new Date(res.list[i - 1].dt * 1000).getDay()) {
+          pushingInfo[0].push(timestampData);
+        } else {
+          pushingInfo.push([]);
+          pushingInfo[pushingInfo.length - 1].push(timestampData);
+        }
+      }
+      console.log(pushingInfo);
+    });
+  }, []);
   return (
     <div className="cityCard">
       <p className="cityName">{city.name}</p>
@@ -99,6 +129,10 @@ function App(): JSX.Element {
             name: weatherInfo.name,
             temp: Math.floor(weatherInfo.main.temp - 273),
             desc: descr,
+          },
+          geo: {
+            lat: weatherInfo.coord.lat,
+            lon: weatherInfo.coord.lon,
           },
         };
         prevState.push(pushingInfo);
