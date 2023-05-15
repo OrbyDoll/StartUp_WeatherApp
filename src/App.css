@@ -75,7 +75,7 @@
 }
 .cityPanel {
   width: 100%;
-  height: 110px;
+  height: 120px;
   margin-top: auto;
 }
 .cityInput {
@@ -103,6 +103,10 @@
   border-radius: 5px;
   display: flex;
   flex-direction: column;
+}
+.cityCard > img {
+  width: 110px;
+  margin: 0px auto;
 }
 .cityCardWrap {
   height: 50vh;
@@ -138,7 +142,7 @@
 .dataSelectMenu {
   display: flex;
   flex-direction: row;
-  height: 30px;
+  height: 29px;
 }
 .svgContainer {
   display: flex;
@@ -167,4 +171,29 @@ svg {
   width: 90%;
   margin: 0px auto;
   background-color: rgba(255, 255, 255, 0.15);
+}
+.tempMenu {
+  width: 100%;
+  height: 105px;
+  display: flex;
+  flex-direction: row;
+  overflow-y: hidden;
+  overflow-x: scroll;
+}
+.tempMenuItem {
+  height: 100%;
+  margin: 15px 4px;
+}
+.tempMenuItem > img {
+  width: 40px;
+  line-height: 20px;
+  margin: 0;
+}
+.tempMenuItem > p {
+  text-align: center;
+  color: white;
+  line-height: 10px;
+}
+::-webkit-scrollbar {
+  width: 0;
 }

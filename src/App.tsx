@@ -1,6 +1,6 @@
 import "./App.css";
 import { useEffect, useState } from "react";
-import { createFetch, getUrlData, getUrlGeo, getUrlForecast } from "./helpers";
+import { createFetch, getUrlData, getUrlGeo, getUrlForecast, getImgUrl } from "./helpers";
 import { getImage } from "./getImage";
 // 07a92f5fb756a201a6c5d7822a16965b - APIkey
 // lat = 57.62987 lon = 39.87368
@@ -12,6 +12,7 @@ import { getImage } from "./getImage";
 // https://say-hi.me/design/7-primerov-krutogo-ui-dlya-prilozhenij-pogody.html - Макет
 type PropsCityCard = {
   sun: {
+    img: string;
     sunrise: string;
     sunset: string;
   };
@@ -27,32 +28,51 @@ type PropsCityCard = {
 };
 
 function CityCard({ sun, city, geo }: PropsCityCard): JSX.Element {
-  const [selectOption, setSelectOption] = useState<string>("temp");
+  const [selectOption, setSelectOption] = useState<string>("");
   const [scrollValue, setScrollValue] = useState<number>(0);
   const [forecastData, setForecastData] = useState<any>([]);
-
+  // const [forecastMenu, setForecastMenu] = useState<JSX.Element>(<div></div>);
+  function renderTempMenu(): JSX.Element {
+    let tempMenu = forecastData[Math.floor(scrollValue / 25) * -1].map((timepoint: any) => {
+      return (
+        <div className="tempMenuItem">
+          <p>{timepoint.main.time}</p>
+          <img src={getImgUrl(timepoint.main.icon)} alt="img" />
+          <p>{timepoint.main.temp}°</p>
+        </div>
+      );
+    });
+    return <div className="tempMenu">{tempMenu}</div>;
+  }
+  let forecastMenu = <p></p>;
+  switch (selectOption) {
+    case "temp":
+      forecastMenu = renderTempMenu();
+  }
   useEffect(() => {
     const urlForecast = getUrlForecast({ lat: geo.lat, lon: geo.lon });
     createFetch(urlForecast).then((res) => {
+      const forecastMass = res.list;
       let pushingInfo: any[][] = [[]];
-      for (let i = 0; i < res.list.length; i++) {
+      for (let i = 0; i < forecastMass.length; i++) {
         let timestampData = {
           main: {
-            temp: Math.floor(res.list[i].main.temp - 273.15),
-            icon: res.list[i].weather.icon,
-            time: new Date(res.list[i].dt * 1000).getHours(),
+            temp: Math.floor(forecastMass[i].main.temp - 273.15),
+            icon: forecastMass[i].weather[0].icon,
+            time: new Date(forecastMass[i].dt * 1000).getHours(),
           },
         };
         if (i == 0) {
-          pushingInfo[0].push(timestampData);
-        } else if (new Date(res.list[i].dt * 1000).getDay() == new Date(res.list[i - 1].dt * 1000).getDay()) {
-          pushingInfo[0].push(timestampData);
+          pushingInfo[pushingInfo.length - 1].push(timestampData);
+        } else if (new Date(forecastMass[i].dt * 1000).getDay() == new Date(forecastMass[i - 1].dt * 1000).getDay()) {
+          pushingInfo[pushingInfo.length - 1].push(timestampData);
         } else {
           pushingInfo.push([]);
           pushingInfo[pushingInfo.length - 1].push(timestampData);
         }
       }
-      console.log(pushingInfo);
+      console.log(pushingInfo, "pi");
+      setForecastData(pushingInfo);
     });
   }, []);
   return (
@@ -60,6 +80,7 @@ function CityCard({ sun, city, geo }: PropsCityCard): JSX.Element {
       <p className="cityName">{city.name}</p>
       <p className="cityTemp">{city.temp}°</p>
       <p className="cityTempDesc">{city.desc}</p>
+      <img src={sun.img} />
       <div className="cityPanel">
         <div className="cityPanelMenu">
           <div className="dataSelectMenu">
@@ -67,10 +88,8 @@ function CityCard({ sun, city, geo }: PropsCityCard): JSX.Element {
               <div
                 className="daySelect_in"
                 onWheel={(event) => {
-                  console.log(Math.sign(event.deltaY));
-
                   if ((scrollValue < 0 || Math.sign(event.deltaY) != 1) && (scrollValue > -100 || Math.sign(event.deltaY) != -1)) {
-                    setScrollValue((then) => then + (1 * event.deltaY) / 50);
+                    setScrollValue((then) => then + (1 * event.deltaY) / 20);
                   }
                 }}
                 style={{ top: `${scrollValue}px` }}
@@ -90,7 +109,7 @@ function CityCard({ sun, city, geo }: PropsCityCard): JSX.Element {
           </div>
           <div className="line"></div>
         </div>
-        {/* <div className="infoMenu"></div> */}
+        {forecastMenu}
       </div>
     </div>
   );
@@ -124,6 +143,7 @@ function App(): JSX.Element {
           sun: {
             sunrise: formatter.format(sunriseDate),
             sunset: formatter.format(sunsetDate),
+            img: getImgUrl(weatherInfo.weather[0].icon),
           },
           city: {
             name: weatherInfo.name,
@@ -164,8 +184,4 @@ function App(): JSX.Element {
 //<ion-icon name="thermometer-outline"></ion-icon>
 //<ion-icon name="sunny-outline"></ion-icon>
 
-fetch("https://api.openweathermap.org/data/2.5/forecast?lat=57.62987&lon=39.87368&cnt=50&appid=07a92f5fb756a201a6c5d7822a16965b")
-  .then((file) => file.json())
-  .then((data) => console.log(data));
 export default App;
-//

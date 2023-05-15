@@ -11,5 +11,9 @@ export async function createFetch(url: string): Promise<any> {
 }
 
 export function getUrlForecast(data: {lat:number, lon:number}):string{
-  return `api.openweathermap.org/data/2.5/forecast?lat=${data.lat}&lon=${data.lon}&appid=07a92f5fb756a201a6c5d7822a16965b`
+  return `http://api.openweathermap.org/data/2.5/forecast?lat=${data.lat}&lon=${data.lon}&cnt=40&appid=07a92f5fb756a201a6c5d7822a16965b`
+}
+
+export function getImgUrl(info:string):string{
+  return `https://openweathermap.org/img/wn/${info}@2x.png`
 }
