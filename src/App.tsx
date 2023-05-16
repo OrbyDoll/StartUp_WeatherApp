@@ -24,15 +24,20 @@ type PropsCityCard = {
   geo: {
     lat: number;
     lon: number;
+    timezone: number;
   };
 };
 
 function CityCard({ sun, city, geo }: PropsCityCard): JSX.Element {
-  const [selectOption, setSelectOption] = useState<string>("");
+  const [selectOption, setSelectOption] = useState<string>("temp");
   const [scrollValue, setScrollValue] = useState<number>(0);
   const [forecastData, setForecastData] = useState<any>([]);
   // const [forecastMenu, setForecastMenu] = useState<JSX.Element>(<div></div>);
   function renderTempMenu(): JSX.Element {
+    if (!forecastData.length) {
+      return <></>;
+    }
+
     let tempMenu = forecastData[Math.floor(scrollValue / 25) * -1].map((timepoint: any) => {
       return (
         <div className="tempMenuItem">
@@ -49,6 +54,7 @@ function CityCard({ sun, city, geo }: PropsCityCard): JSX.Element {
     case "temp":
       forecastMenu = renderTempMenu();
   }
+  let weekDays = ["Mon", "Tue", "Wed", "Thur", "Fri", "Sat", "Sun"];
   useEffect(() => {
     const urlForecast = getUrlForecast({ lat: geo.lat, lon: geo.lon });
     createFetch(urlForecast).then((res) => {
@@ -64,14 +70,13 @@ function CityCard({ sun, city, geo }: PropsCityCard): JSX.Element {
         };
         if (i == 0) {
           pushingInfo[pushingInfo.length - 1].push(timestampData);
-        } else if (new Date(forecastMass[i].dt * 1000).getDay() == new Date(forecastMass[i - 1].dt * 1000).getDay()) {
+        } else if (new Date((forecastMass[i].dt - 10800 + geo.timezone) * 1000).getDay() == new Date(forecastMass[i - 1].dt * 1000).getDay()) {
           pushingInfo[pushingInfo.length - 1].push(timestampData);
         } else {
           pushingInfo.push([]);
           pushingInfo[pushingInfo.length - 1].push(timestampData);
         }
       }
-      console.log(pushingInfo, "pi");
       setForecastData(pushingInfo);
     });
   }, []);
@@ -87,9 +92,9 @@ function CityCard({ sun, city, geo }: PropsCityCard): JSX.Element {
             <div className="daySelect">
               <div
                 className="daySelect_in"
-                onWheel={(event) => {
-                  if ((scrollValue < 0 || Math.sign(event.deltaY) != 1) && (scrollValue > -100 || Math.sign(event.deltaY) != -1)) {
-                    setScrollValue((then) => then + (1 * event.deltaY) / 20);
+                onWheel={(e) => {
+                  if ((scrollValue < 0 || Math.sign(e.deltaY) != 1) && (scrollValue > -100 || Math.sign(e.deltaY) != -1)) {
+                    setScrollValue((then) => then + 25 * Math.sign(e.deltaY));
                   }
                 }}
                 style={{ top: `${scrollValue}px` }}
@@ -126,8 +131,6 @@ function App(): JSX.Element {
       const urlData = getUrlData(res[0]);
 
       createFetch(urlData).then((weatherInfo) => {
-        console.log(weatherInfo);
-
         const sunriseDate = new Date((weatherInfo.sys.sunrise - 10800 + weatherInfo.timezone) * 1000);
         const sunsetDate = new Date((weatherInfo.sys.sunset - 10800 + weatherInfo.timezone) * 1000);
         let descr = weatherInfo.weather[0].description;
@@ -153,6 +156,7 @@ function App(): JSX.Element {
           geo: {
             lat: weatherInfo.coord.lat,
             lon: weatherInfo.coord.lon,
+            timezone: weatherInfo.timezone,
           },
         };
         prevState.push(pushingInfo);
