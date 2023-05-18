@@ -54,10 +54,11 @@ function CityCard({ sun, city, geo }: PropsCityCard): JSX.Element {
     case "temp":
       forecastMenu = renderTempMenu();
   }
-  let weekDays = ["Mon", "Tue", "Wed", "Thur", "Fri", "Sat", "Sun"];
   useEffect(() => {
     const urlForecast = getUrlForecast({ lat: geo.lat, lon: geo.lon });
     createFetch(urlForecast).then((res) => {
+      console.log(res);
+
       const forecastMass = res.list;
       let pushingInfo: any[][] = [[]];
       for (let i = 0; i < forecastMass.length; i++) {
@@ -66,6 +67,7 @@ function CityCard({ sun, city, geo }: PropsCityCard): JSX.Element {
             temp: Math.floor(forecastMass[i].main.temp - 273.15),
             icon: forecastMass[i].weather[0].icon,
             time: new Date(forecastMass[i].dt * 1000).getHours(),
+            day: new Date(forecastMass[i].dt * 1000).getDay() - 1,
           },
         };
         if (i == 0) {
@@ -80,6 +82,15 @@ function CityCard({ sun, city, geo }: PropsCityCard): JSX.Element {
       setForecastData(pushingInfo);
     });
   }, []);
+  let weekDays = ["Mon", "Tue", "Wed", "Thur", "Fri", "Sat", "Sun"];
+  let weekDaysWrap = forecastData.length ? (
+    forecastData.map((item: any, index: number) => {
+      return <p>{weekDays[item[0].main.day]}</p>;
+    })
+  ) : (
+    <p></p>
+  );
+
   return (
     <div className="cityCard">
       <p className="cityName">{city.name}</p>
@@ -93,17 +104,15 @@ function CityCard({ sun, city, geo }: PropsCityCard): JSX.Element {
               <div
                 className="daySelect_in"
                 onWheel={(e) => {
+                  console.log(e.deltaY);
+
                   if ((scrollValue < 0 || Math.sign(e.deltaY) != 1) && (scrollValue > -100 || Math.sign(e.deltaY) != -1)) {
                     setScrollValue((then) => then + 25 * Math.sign(e.deltaY));
                   }
                 }}
                 style={{ top: `${scrollValue}px` }}
               >
-                <p>Mon</p>
-                <p>Tue</p>
-                <p>Wed</p>
-                <p>Thur</p>
-                <p>Fri</p>
+                {weekDaysWrap}
               </div>
             </div>
             <div className="svgContainer">
